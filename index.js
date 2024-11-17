@@ -33,8 +33,7 @@ const initApp = () => {
         productItem.innerHTML = `
             <img src="${product.image}" alt="${product.name}">
             <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <p>GHC ${product.price}</p>
+            <p class="price">GHC ${product.price}</p>
             <button class="addToCart" data-id="${product.id}">Add to Cart</button>
         `;
         listProduct.appendChild(productItem);
