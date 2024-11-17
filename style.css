@@ -28,6 +28,7 @@ header {
 }
 .cart-icon {
     position: relative;
+    cursor: pointer;
 }
 .cart-icon span {
     position: absolute;
