@@ -26,6 +26,7 @@ const cart = () => {
         } else {
             cart.splice(position, 1);
         }
+        localStorage.setItem('cart', JSON.stringify(cart));
         renderCart();
     }
 
@@ -76,6 +77,15 @@ const cart = () => {
             setProductInCart(productId, quantity, position);
         } 
     });
+
+    // init app
+    const initApp = () => {
+        if (localStorage.getItem('cart')) {
+            cart = JSON.parse(localStorage.getItem('cart'));
+        }
+        renderCart();
+    }
+    initApp();
 }
 
 export default cart;
