@@ -22,7 +22,7 @@ const loadTemplate = () => {
 }
 
 const initApp = () => {
-    console.log(products);
+    // console.log(products);
     // load products
     let listProduct = document.querySelector('.listProduct');
     // clear existing content

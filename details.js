@@ -36,7 +36,7 @@ const initApp = () => {
     
     // Find the selected product
     let product = products.find(product => product.id == id);
-    console.log(product);
+    // console.log(product);
     
     // If there's no product, redirect to home page
     if (!product) {
