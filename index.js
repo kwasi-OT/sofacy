@@ -31,7 +31,9 @@ const initApp = () => {
         let productItem = document.createElement('div');
         productItem.classList.add('product-item');
         productItem.innerHTML = `
-            <img src="${product.image}" alt="${product.name}">
+            <a href='/details.html?id=${product.id}'>
+                <img src="${product.image}" alt="${product.name}">
+            </a>
             <h3>${product.name}</h3>
             <p class="price">GHC ${product.price}</p>
             <button class="addToCart" data-id="${product.id}">Add to Cart</button>

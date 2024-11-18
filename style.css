@@ -143,10 +143,6 @@ body.activeTabCart .container{
     gap: 10px;
     align-items: center;
     text-align: center;
-    /* margin: 10px 0;
-    background-color: #eee;
-    padding: 10px;
-    border-radius: 10px; */
 }
 
 .listCart .item .quantity {
@@ -166,9 +162,81 @@ body.activeTabCart .container{
 .listCart .item .quantity span:nth-child(2) {
     background-color: transparent;
     color: #eee;
-    /* margin: 0 10px; */
 }
 
 .listCart .item:nth-child(even) {
     background-color: #eee1;
+}
+
+/* details page */
+
+.detail {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+    text-align: left;
+}
+
+.detail .image img {
+    width: 100%;
+}
+
+.detail .image {
+    position: relative;
+}
+
+.detail .image::before {
+    position: absolute;
+    content: '';
+    background-color: #94817733;
+    z-index: -1;
+    top: 50px;
+    left: calc(50% - 120px);
+    width: 300px;
+    height: 300px;
+    border-radius: 190px 100px 170px 100px;
+}
+
+.detail .name {
+    font-size: xx-large;
+    font-weight: 500;
+    padding: 40px 0 0 0;
+    margin: 0 0 10px 0;
+}
+
+.detail .price {
+    font-size: x-large;
+    font-weight: bold;
+    letter-spacing: 7px;
+    margin: 0 0 20px 0;
+}
+
+.detail .buttons button {
+    background-color: #eee;
+    border: none;
+    padding: 15px 20px;
+    margin-right: 10px;
+    border-radius: 20px;
+    font-size: large;
+    cursor: pointer
+}
+
+.detail svg {
+    width: 15px;
+}
+
+.detail .buttons button:nth-child(2) {
+    background-color: #2f2f2f;
+    color: #eee;
+    display: inline-flex;
+    gap: 20px;
+    box-shadow: 0 10px 20px #2f2f2f77;
+}
+
+.detail .buttons svg {
+    transform: translateY(5px);
+}
+
+.detail .description {
+    font-weight: 300;
 }
