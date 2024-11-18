@@ -35,6 +35,7 @@ const initApp = () => {
                 <img src="${product.image}" alt="${product.name}">
             </a>
             <h3>${product.name}</h3>
+            <p class="description">${product.description}</p>
             <p class="price">GHC ${product.price}</p>
             <button class="addToCart" data-id="${product.id}">Add to Cart</button>
         `;

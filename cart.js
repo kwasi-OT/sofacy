@@ -91,12 +91,13 @@ const cart = () => {
 
     let searchBar = document.querySelector('.searchBar input');
     let listProduct = document.querySelector('.listProduct');
+    let searchErrorDisplay = document.querySelector('#contentTab');
     searchBar.addEventListener('input', () => {
         let value = searchBar.value;
         let filteredProducts = products.filter((product) => product.name.toLowerCase().includes(value.toLowerCase()));
         // if search value is not found
         if (filteredProducts.length == 0) {
-            listProduct.innerHTML = `<h1 class="notFound">Product not found</h1>`;
+            searchErrorDisplay.innerHTML = `<h1 class="notFound">Sorry, "${value}" does not match any product.<br>Please try something else.</h1>`;
             return;
         }
         // clear existing content
