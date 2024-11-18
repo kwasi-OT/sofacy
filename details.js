@@ -55,16 +55,22 @@ const initApp = () => {
     details.querySelector('.addToCart').dataset.id = id;
     details.querySelector('.checkOut').dataset.id = id;
 
-    /**
-     * Checkout button handler
-     * Adds current product to cart and redirects to checkout
-     */
-    details.querySelector('.checkOut').addEventListener('click', () => {
+    // Add keyboard support for checkout button
+    const checkoutBtn = details.querySelector('.checkOut');
+    checkoutBtn.addEventListener('click', handleCheckout);
+    checkoutBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCheckout();
+        }
+    });
+
+    function handleCheckout() {
         // Add the product to cart with quantity 1
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const existingItemIndex = cart.findIndex(item => item.product_id == id);
         
-        if (existingItemIndex === -1) {
+        if (existingItemIndex < 0) {
             // Add new item if not in cart
             cart.push({
                 product_id: id,
@@ -78,7 +84,7 @@ const initApp = () => {
         // Save cart and redirect to checkout
         localStorage.setItem('cart', JSON.stringify(cart));
         window.location.href = './checkout.html';
-    });
+    }
 
     // Load similar products section
     let listProduct = document.querySelector('.listProduct');
@@ -90,15 +96,46 @@ const initApp = () => {
         let productItem = document.createElement('div');
         productItem.classList.add('product-item');
         productItem.innerHTML = `
-            <a href='/details.html?id=${product.id}'>
+            <a href='/details.html?id=${product.id}' tabindex="0">
                 <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <div class="price">GHC ${product.price}</div>
             </a>
-            <h3>${product.name}</h3>
-            <p class="price">GHC ${product.price}</p>
-            <button class="addToCart" data-id="${product.id}">Add to Cart</button>
+            <button class="addToCart" data-id="${product.id}" tabindex="0" aria-label="Add ${product.name} to cart">Add to Cart</button>
         `;
         listProduct.appendChild(productItem);
     });
+
+    // Add keyboard support for add to cart buttons
+    document.querySelectorAll('.addToCart').forEach(button => {
+        button.addEventListener('click', handleAddToCart);
+        button.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleAddToCart.call(button);
+            }
+        });
+    });
+
+    function handleAddToCart() {
+        const productId = this.dataset.id;
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItemIndex = cart.findIndex(item => item.product_id == productId);
+        
+        if (existingItemIndex < 0) {
+            cart.push({
+                product_id: productId,
+                quantity: 1
+            });
+        } else {
+            cart[existingItemIndex].quantity++;
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        // Update cart display
+        document.querySelector('.cart-icon span').innerHTML = 
+            cart.reduce((total, item) => total + item.quantity, 0);
+    }
 }
 
 // Initialize the app when DOM is loaded

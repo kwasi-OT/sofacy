@@ -12,10 +12,10 @@ class CheckoutForm {
         console.log('Initializing CheckoutForm');
         this.form = document.getElementById('checkoutForm');
         this.cart = JSON.parse(localStorage.getItem('cart')) || [];
-        console.log('Cart from localStorage:', this.cart);
         this.orderItems = document.getElementById('orderItems');
         this.orderTotal = document.getElementById('orderTotal');
         this.setupValidation();
+        this.setupKeyboardNavigation();
         this.loadOrderSummary();
     }
 
@@ -26,6 +26,8 @@ class CheckoutForm {
         // Add input event listeners for real-time validation
         this.form.querySelectorAll('input, textarea').forEach(input => {
             input.addEventListener('input', () => this.validateField(input));
+            // Add blur event for keyboard users
+            input.addEventListener('blur', () => this.validateField(input));
         });
 
         // Add form submit handler
@@ -33,6 +35,34 @@ class CheckoutForm {
 
         // Special validation for card fields
         this.setupCardValidation();
+    }
+
+    /**
+     * Set up keyboard navigation for the form
+     */
+    setupKeyboardNavigation() {
+        // Handle Enter key on form elements
+        this.form.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                const inputs = Array.from(this.form.querySelectorAll('input, textarea, button'));
+                const index = inputs.indexOf(e.target);
+                if (index > -1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            }
+        });
+
+        // Add focus styles
+        const formElements = this.form.querySelectorAll('input, textarea, button');
+        formElements.forEach(element => {
+            element.addEventListener('focus', () => {
+                element.classList.add('focus-visible');
+            });
+            element.addEventListener('blur', () => {
+                element.classList.remove('focus-visible');
+            });
+        });
     }
 
     /**
@@ -97,10 +127,13 @@ class CheckoutForm {
             input.classList.add('error');
             error.textContent = errorMessage;
             error.classList.add('show');
+            // Announce error to screen readers
+            error.setAttribute('role', 'alert');
         } else {
             input.classList.remove('error');
             error.classList.remove('show');
             error.textContent = '';
+            error.removeAttribute('role');
         }
 
         return isValid;
@@ -128,6 +161,17 @@ class CheckoutForm {
             }
             e.target.value = value;
         });
+
+        // Add keyboard navigation for card fields
+        [cardNumber, expiry].forEach(input => {
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const next = input.id === 'cardNumber' ? expiry : document.getElementById('cvv');
+                    next.focus();
+                }
+            });
+        });
     }
 
     /**
@@ -135,18 +179,12 @@ class CheckoutForm {
      */
     loadOrderSummary() {
         console.log('Loading order summary');
-        console.log('Cart items:', this.cart);
-        console.log('Available products:', products);
-        
         let total = 0;
         this.orderItems.innerHTML = '';
 
         this.cart.forEach(item => {
-            console.log('Processing item:', item);
-            // Use findIndex and get the product using the index
             const productIndex = products.findIndex(p => p.id == item.product_id);
             const product = products[productIndex];
-            console.log('Found product:', product);
             
             if (productIndex !== -1) {
                 const itemTotal = product.price * item.quantity;
@@ -154,6 +192,7 @@ class CheckoutForm {
 
                 const itemElement = document.createElement('div');
                 itemElement.classList.add('order-item');
+                itemElement.setAttribute('role', 'listitem');
                 itemElement.innerHTML = `
                     <div class="item-details">
                         <span>${product.name} x ${item.quantity}</span>
@@ -165,7 +204,6 @@ class CheckoutForm {
         });
 
         this.orderTotal.textContent = `GHC ${total}`;
-        console.log('Total calculated:', total);
     }
 
     /**
@@ -177,14 +215,20 @@ class CheckoutForm {
 
         // Validate all fields
         let isValid = true;
+        let firstInvalidInput = null;
+
         this.form.querySelectorAll('input, textarea').forEach(input => {
             if (!this.validateField(input)) {
                 isValid = false;
+                if (!firstInvalidInput) {
+                    firstInvalidInput = input;
+                }
             }
         });
 
         if (!isValid) {
-            alert('Please fill in all required fields correctly');
+            // Focus the first invalid input
+            firstInvalidInput.focus();
             return;
         }
 
@@ -197,8 +241,6 @@ class CheckoutForm {
      * Currently just shows success message and clears cart
      */
     processOrder() {
-        // Here you would typically send the order to a server
-        // For now, we'll just show a success message and clear the cart
         alert('Order placed successfully!');
         localStorage.removeItem('cart');
         window.location.href = './';

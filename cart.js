@@ -14,23 +14,57 @@ const cart = () => {
     // Initialize cart from localStorage to persist cart data across page reloads
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Event Listeners for cart UI
-    iconCart.addEventListener('click', () => {
-        body.classList.add('activeTabCart');
+    // Event Listeners for cart UI with keyboard support
+    iconCart.addEventListener('click', toggleCart);
+    iconCart.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleCart();
+        }
     });
     
-    closeBtn.addEventListener('click', () => {
-        body.classList.remove('activeTabCart');
+    closeBtn.addEventListener('click', closeCart);
+    closeBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            closeCart();
+        } else if (e.key === 'Tab' && !e.shiftKey) {
+            // Move focus to first quantity button when tabbing from close
+            e.preventDefault();
+            const firstQuantityBtn = document.querySelector('.decrease');
+            if (firstQuantityBtn) firstQuantityBtn.focus();
+        }
     });
+
+    // Functions to handle cart visibility
+    function toggleCart() {
+        body.classList.add('activeTabCart');
+        // Focus the close button when cart opens
+        setTimeout(() => closeBtn.focus(), 100);
+    }
+
+    function closeCart() {
+        body.classList.remove('activeTabCart');
+        // Return focus to cart icon when closing
+        iconCart.focus();
+    }
     
     // Checkout button handler - redirects to checkout page if cart has items
-    checkoutBtn.addEventListener('click', () => {
+    checkoutBtn.addEventListener('click', handleCheckout);
+    checkoutBtn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleCheckout();
+        }
+    });
+
+    function handleCheckout() {
         if (cart.length > 0) {
             window.location.href = './checkout.html';
         } else {
             alert('Your cart is empty!');
         }
-    });
+    }
 
     /**
      * Updates cart with product quantity changes
@@ -58,7 +92,7 @@ const cart = () => {
 
     /**
      * Renders the cart UI with current cart items
-     * Calculates totals and updates quantity display
+     * Adds keyboard navigation to quantity controls
      */
     const renderCart = () => {
         let listCart = document.querySelector('.listCart');
@@ -66,26 +100,22 @@ const cart = () => {
         let totalQuantity = 0;
         listCart.innerHTML = null;
 
-        cart.forEach(item => {
+        cart.forEach((item, index) => {
             totalQuantity = totalQuantity + item.quantity;
             let product = products.findIndex(product => product.id == item.product_id);
             let info = products[product];
             let productItem = document.createElement('div');
             productItem.classList.add('item');
             productItem.innerHTML = `
-                <div class='image'>
-                    <img src="${info.image}" alt="${info.name}">
+                <img src="${info.image}" alt="${info.name}">
+                <div class="info">
+                    <div class="name">${info.name}</div>
+                    <div class="price">GHC ${info.price}</div>
                 </div>
-                <div class="name">
-                    ${info.name}
-                </div>
-                <div class="totalPrice">
-                    GHC ${info.price * item.quantity}
-                </div>
-                <div class="quantity">
-                    <span class="decrease" data-id="${info.id}">-</span>
-                    <span>${item.quantity}</span>
-                    <span class="increase" data-id="${info.id}">+</span>
+                <div class="quantity" role="group" aria-label="Quantity controls for ${info.name}">
+                    <button class="decrease" data-id="${info.id}" aria-label="Decrease quantity" tabindex="0">-</button>
+                    <span class="quantity-display" role="status" aria-live="polite">${item.quantity}</span>
+                    <button class="increase" data-id="${info.id}" aria-label="Increase quantity" tabindex="0">+</button>
                 </div>
             `;
             listCart.appendChild(productItem);
@@ -93,42 +123,50 @@ const cart = () => {
 
         totalHTML.innerHTML = totalQuantity;
 
-        // Add event listeners for quantity adjustment buttons
-        document.querySelectorAll('.increase').forEach(button => {
-            button.addEventListener('click', () => {
-                let id = button.dataset.id;
-                let positionItemInCart = cart.findIndex(value => value.product_id == id);
-                if(positionItemInCart >= 0){
-                    cart[positionItemInCart].quantity = cart[positionItemInCart].quantity + 1;
+        // Add keyboard event listeners for quantity adjustment buttons
+        document.querySelectorAll('.increase, .decrease').forEach(button => {
+            button.addEventListener('click', handleQuantityChange);
+            button.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleQuantityChange.call(button);
                 }
-                localStorage.setItem('cart', JSON.stringify(cart));
-                renderCart();
-            })
-        });
-
-        document.querySelectorAll('.decrease').forEach(button => {
-            button.addEventListener('click', () => {
-                let id = button.dataset.id;
-                let positionItemInCart = cart.findIndex(value => value.product_id == id);
-                if(positionItemInCart >= 0){
-                    cart[positionItemInCart].quantity = cart[positionItemInCart].quantity - 1;
-                }
-                localStorage.setItem('cart', JSON.stringify(cart));
-                renderCart();
-            })
+            });
         });
     }
 
-    // Add click handlers for add to cart buttons
-    document.querySelectorAll('.addToCart').forEach(button => {
-        button.addEventListener('click', () => {
-            let id = button.dataset.id;
-            let positionThisProductInCart = cart.findIndex((value) => value.product_id == id);
-            if(positionThisProductInCart < 0){
-                setProductInCart(id, 1, -1);
+    function handleQuantityChange() {
+        const id = this.dataset.id;
+        const positionItemInCart = cart.findIndex(value => value.product_id == id);
+        if (positionItemInCart >= 0) {
+            const change = this.classList.contains('increase') ? 1 : -1;
+            cart[positionItemInCart].quantity = cart[positionItemInCart].quantity + change;
+            if (cart[positionItemInCart].quantity <= 0) {
+                cart.splice(positionItemInCart, 1);
             }
-        })
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        renderCart();
+    }
+
+    // Add keyboard support for add to cart buttons
+    document.querySelectorAll('.addToCart').forEach(button => {
+        button.addEventListener('click', handleAddToCart);
+        button.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleAddToCart.call(button);
+            }
+        });
     });
+
+    function handleAddToCart() {
+        const id = this.dataset.id;
+        const positionThisProductInCart = cart.findIndex((value) => value.product_id == id);
+        if (positionThisProductInCart < 0) {
+            setProductInCart(id, 1, -1);
+        }
+    }
 
     // button click event
     document.addEventListener('click', (event) => {
