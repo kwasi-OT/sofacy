@@ -10,10 +10,10 @@
 const products = [
     {
         id: 1,
-        name: 'Beach Chair',
+        name: 'Rocker Chair',
         price: 100,
-        description: 'A comfortable beach chair',
-        image: '/images/beach.png'
+        description: 'A comfortable rocker chair',
+        image: '/images/rocker.png'
     },
     {
         id: 2,
@@ -38,31 +38,31 @@ const products = [
     },
     {
         id: 5,
-        name: 'Green Sofa',
+        name: 'Blue Office Chair',
         price: 500,
-        description: 'A comfortable green sofa',
-        image: '/images/chair-green.png'
+        description: 'A comfortable blue office chair',
+        image: '/images/chair-office-blue.png'
     },
     {
         id: 6,
-        name: 'Garden Chair',
+        name: 'Office Leather Chair',
         price: 600,
-        description: 'A comfortable garden chair',
-        image: '/images/chair-garden.png'
+        description: 'A comfortable office leather chair',
+        image: '/images/chair-office-leather.png'
     },
     {
         id: 7,
-        name: 'Gray Sofa',
+        name: 'Pink Office Chair',
         price: 700,
-        description: 'A comfortable gray sofa',
-        image: '/images/chair-gray.png'
+        description: 'A comfortable pink office chair',
+        image: '/images/chair-officw-pink.png'
     },
     {
         id: 8,
-        name: 'Big Red Sofa',
+        name: 'Vintage Chair',
         price: 800,
-        description: 'A comfortable bigred sofa',
-        image: '/images/sofa-big.png'
+        description: 'A comfortable vintage chair',
+        image: '/images/chair-vintage.png'
     }
 ];
 export default products;
