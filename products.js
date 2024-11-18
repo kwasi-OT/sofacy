@@ -1,3 +1,12 @@
+/**
+ * Product catalog data
+ * Each product has:
+ * @property {number} id - Unique identifier for the product
+ * @property {string} name - Product name
+ * @property {number} price - Product price in GHC
+ * @property {string} description - Product description
+ * @property {string} image - Path to product image
+ */
 const products = [
     {
         id: 1,
@@ -36,7 +45,7 @@ const products = [
     },
     {
         id: 6,
-        name: 'Gardden Chair',
+        name: 'Garden Chair',
         price: 600,
         description: 'A comfortable garden chair',
         image: '/images/chair-garden.png'
