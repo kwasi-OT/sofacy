@@ -240,3 +240,37 @@ body.activeTabCart .container{
 .detail .description {
     font-weight: 300;
 }
+
+
+/* responsiveness */
+
+@media screen and (max-width: 992px) {
+    .listProduct {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .listProduct {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .detail {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .detail .image img {
+        width: unset;
+        height: 40vh;
+    }
+
+    .detail .name {
+        font-size: x-large;
+        margin: 0;
+    }
+
+    .detail .buttons button {
+        font-size: small;
+    }
+}
