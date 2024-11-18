@@ -86,6 +86,35 @@ const cart = () => {
         renderCart();
     }
     initApp();
+
+    // implement search feature 
+
+    let searchBar = document.querySelector('.searchBar input');
+    let listProduct = document.querySelector('.listProduct');
+    searchBar.addEventListener('input', () => {
+        let value = searchBar.value;
+        let filteredProducts = products.filter((product) => product.name.toLowerCase().includes(value.toLowerCase()));
+        // if search value is not found
+        if (filteredProducts.length == 0) {
+            listProduct.innerHTML = `<h1 class="notFound">Product not found</h1>`;
+            return;
+        }
+        // clear existing content
+        listProduct.innerHTML = null;
+        filteredProducts.forEach(product => {
+            let productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+            productItem.innerHTML = `
+                <a href='/details.html?id=${product.id}'>
+                    <img src="${product.image}" alt="${product.name}">
+                </a>
+                <h3>${product.name}</h3>
+                <p class="price">GHC ${product.price}</p>
+                <button class="addToCart" data-id="${product.id}">Add to Cart</button>
+            `;
+            listProduct.appendChild(productItem);
+        });
+    });
 }
 
 export default cart;
