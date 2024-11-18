@@ -3,79 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+    <title>Checkout - Sofacy</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <div class="title">
-                <a href="/">Home</a>
+            <div class="title" role="heading" aria-level="1">
+                <a href="/" aria-label="Return to home page">Home</a>
             </div>
         </header>
-        <main class="checkout-container">
-            <h1>Checkout</h1>
+        <main class="checkout-container" role="main">
+            <h1 role="heading" aria-level="1">Checkout</h1>
             <div class="checkout-grid">
-                <div class="checkout-form">
-                    <form id="checkoutForm">
-                        <div class="form-section">
-                            <h2>Shipping Information</h2>
+                <div class="checkout-form" role="form">
+                    <form id="checkoutForm" aria-label="Checkout form">
+                        <div class="form-section" role="group" aria-labelledby="shipping-heading">
+                            <h2 id="shipping-heading" role="heading" aria-level="2">Shipping Information</h2>
                             <div class="form-group">
-                                <label for="fullName">Full Name</label>
-                                <input type="text" id="fullName" name="fullName" required>
-                                <span class="error-message"></span>
+                                <label for="fullName" id="fullName-label">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" required aria-required="true" aria-labelledby="fullName-label" aria-describedby="fullName-error">
+                                <span class="error-message" id="fullName-error" role="alert" aria-live="polite"></span>
                             </div>
                             <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" required>
-                                <span class="error-message"></span>
+                                <label for="email" id="email-label">Email</label>
+                                <input type="email" id="email" name="email" required aria-required="true" aria-labelledby="email-label" aria-describedby="email-error">
+                                <span class="error-message" id="email-error" role="alert" aria-live="polite"></span>
                             </div>
                             <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="tel" id="phone" name="phone" required>
-                                <span class="error-message"></span>
+                                <label for="phone" id="phone-label">Phone</label>
+                                <input type="tel" id="phone" name="phone" required aria-required="true" aria-labelledby="phone-label" aria-describedby="phone-error">
+                                <span class="error-message" id="phone-error" role="alert" aria-live="polite"></span>
                             </div>
                             <div class="form-group">
-                                <label for="address">Address</label>
-                                <textarea id="address" name="address" required></textarea>
-                                <span class="error-message"></span>
+                                <label for="address" id="address-label">Address</label>
+                                <textarea id="address" name="address" required aria-required="true" aria-labelledby="address-label" aria-describedby="address-error"></textarea>
+                                <span class="error-message" id="address-error" role="alert" aria-live="polite"></span>
                             </div>
                         </div>
 
-                        <div class="form-section">
-                            <h2>Payment Information</h2>
+                        <div class="form-section" role="group" aria-labelledby="payment-heading">
+                            <h2 id="payment-heading" role="heading" aria-level="2">Payment Information</h2>
                             <div class="form-group">
-                                <label for="cardName">Name on Card</label>
-                                <input type="text" id="cardName" name="cardName" required>
-                                <span class="error-message"></span>
+                                <label for="cardName" id="cardName-label">Name on Card</label>
+                                <input type="text" id="cardName" name="cardName" required aria-required="true" aria-labelledby="cardName-label" aria-describedby="cardName-error">
+                                <span class="error-message" id="cardName-error" role="alert" aria-live="polite"></span>
                             </div>
                             <div class="form-group">
-                                <label for="cardNumber">Card Number</label>
-                                <input type="text" id="cardNumber" name="cardNumber" required maxlength="16">
-                                <span class="error-message"></span>
+                                <label for="cardNumber" id="cardNumber-label">Card Number</label>
+                                <input type="text" id="cardNumber" name="cardNumber" required maxlength="16" aria-required="true" aria-labelledby="cardNumber-label" aria-describedby="cardNumber-error">
+                                <span class="error-message" id="cardNumber-error" role="alert" aria-live="polite"></span>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label for="expiry">Expiry Date</label>
-                                    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required maxlength="5">
-                                    <span class="error-message"></span>
+                                    <label for="expiry" id="expiry-label">Expiry Date</label>
+                                    <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required maxlength="5" aria-required="true" aria-labelledby="expiry-label" aria-describedby="expiry-error">
+                                    <span class="error-message" id="expiry-error" role="alert" aria-live="polite"></span>
                                 </div>
                                 <div class="form-group">
-                                    <label for="cvv">CVV</label>
-                                    <input type="text" id="cvv" name="cvv" required maxlength="3">
-                                    <span class="error-message"></span>
+                                    <label for="cvv" id="cvv-label">CVV</label>
+                                    <input type="text" id="cvv" name="cvv" required maxlength="3" aria-required="true" aria-labelledby="cvv-label" aria-describedby="cvv-error">
+                                    <span class="error-message" id="cvv-error" role="alert" aria-live="polite"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="submit-order">Place Order</button>
+                        <button type="submit" class="submit-order" aria-label="Place order">Place Order</button>
                     </form>
                 </div>
 
-                <div class="order-summary">
-                    <h2>Order Summary</h2>
-                    <div id="orderItems"></div>
-                    <div class="total">
+                <div class="order-summary" role="complementary" aria-label="Order summary">
+                    <h2 role="heading" aria-level="2">Order Summary</h2>
+                    <div id="orderItems" role="list" aria-label="Order items"></div>
+                    <div class="total" role="text" aria-label="Order total">
                         <span>Total:</span>
                         <span id="orderTotal">GHC 0.00</span>
                     </div>

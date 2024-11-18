@@ -7,10 +7,10 @@
     <title>Sofacy</title>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="title">
-                <a href="/">Home</a>
+    <div class="container" role="main">
+        <header role="banner">
+            <div class="title" role="heading" aria-level="1">
+                <a href="/" aria-label="Return to home page">Home</a>
             </div>
             <div class="searchBar">
                 <input type="text" placeholder="Search">
@@ -19,25 +19,25 @@
                 </svg>
 
             </div>
-            <div class="cart-icon">
+            <div class="cart-icon" role="button" aria-label="Shopping cart" tabindex="0">
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 4h1.5L9 16m0 0h8m-8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm8 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8.5-3h9.25L19 7H7.312"/>
                 </svg>
-                <span>0</span>
+                <span role="status" aria-live="polite">0</span>
             </div>
         </header>
-        <main id="contentTab">
+        <main id="contentTab" role="main" aria-label="Main content">
             Content in template file
         </main>
     </div>
-    <div class="cartTab">
-        <h1>Shopping Cart</h1>
-        <div class="listCart">
+    <div class="cartTab" role="complementary" aria-label="Shopping cart panel">
+        <h1 role="heading" aria-level="2">Shopping Cart</h1>
+        <div class="listCart" role="list" aria-label="Cart items">
             Show items here
         </div>
-        <div class="btn">
-            <button class="close">CLOSE</button>
-            <button class="checkOut">Check Out</button>
+        <div class="btn" role="group" aria-label="Cart actions">
+            <button class="close" aria-label="Close cart">CLOSE</button>
+            <button class="checkOut" aria-label="Proceed to checkout">Check Out</button>
         </div>
     </div>
     <footer>
