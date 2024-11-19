@@ -9,7 +9,7 @@ class CheckoutForm {
      * Initialize the checkout form and load order summary
      */
     constructor() {
-        console.log('Initializing CheckoutForm');
+        // console.log('Initializing CheckoutForm');
         this.form = document.getElementById('checkoutForm');
         this.cart = JSON.parse(localStorage.getItem('cart')) || [];
         this.orderItems = document.getElementById('orderItems');
@@ -178,7 +178,7 @@ class CheckoutForm {
      * Load and display the order summary from cart data
      */
     loadOrderSummary() {
-        console.log('Loading order summary');
+        // console.log('Loading order summary');
         let total = 0;
         this.orderItems.innerHTML = '';
 
