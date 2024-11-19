@@ -93,37 +93,113 @@ const cart = () => {
     /**
      * Renders the cart UI with current cart items
      * Adds keyboard navigation to quantity controls
+     * @throws {Error} If cart data is invalid or products cannot be found
      */
     const renderCart = () => {
-        let listCart = document.querySelector('.listCart');
-        let totalHTML = document.querySelector('.cart-icon span');
-        let totalQuantity = 0;
-        listCart.innerHTML = null;
+        try {
+            if (!Array.isArray(cart)) {
+                throw new Error('Invalid cart data structure');
+            }
 
-        cart.forEach((item, index) => {
-            totalQuantity = totalQuantity + item.quantity;
-            let product = products.findIndex(product => product.id == item.product_id);
-            let info = products[product];
-            let productItem = document.createElement('div');
-            productItem.classList.add('item');
-            productItem.innerHTML = `
-                <img src="${info.image}" alt="${info.name}">
-                <div class="info">
-                    <div class="name">${info.name}</div>
-                    <div class="price">GHC ${info.price}</div>
-                </div>
-                <div class="quantity" role="group" aria-label="Quantity controls for ${info.name}">
-                    <button class="decrease" data-id="${info.id}" aria-label="Decrease quantity" tabindex="0">-</button>
-                    <span class="quantity-display" role="status" aria-live="polite">${item.quantity}</span>
-                    <button class="increase" data-id="${info.id}" aria-label="Increase quantity" tabindex="0">+</button>
-                </div>
-            `;
-            listCart.appendChild(productItem);
-        });
+            const listCart = document.querySelector('.listCart');
+            const totalHTML = document.querySelector('.cart-icon span');
+            
+            if (!listCart || !totalHTML) {
+                throw new Error('Required cart UI elements not found');
+            }
 
-        totalHTML.innerHTML = totalQuantity;
+            // Clear existing cart items
+            listCart.innerHTML = '';
+            let totalQuantity = 0;
 
-        // Add keyboard event listeners for quantity adjustment buttons
+            cart.forEach((item, index) => {
+                if (!item || typeof item.quantity !== 'number' || !item.product_id) {
+                    throw new Error(`Invalid cart item at index ${index}`);
+                }
+
+                totalQuantity += item.quantity;
+                const productIndex = products.findIndex(product => product.id == item.product_id);
+                
+                if (productIndex === -1) {
+                    throw new Error(`Product not found for ID: ${item.product_id}`);
+                }
+
+                const info = products[productIndex];
+                try {
+                    const productItem = createCartItemElement(info, item);
+                    listCart.appendChild(productItem);
+                } catch (error) {
+                    throw new Error(`Failed to create cart item: ${error.message}`);
+                }
+            });
+
+            // Update total quantity display
+            totalHTML.textContent = totalQuantity;
+
+            // Add keyboard event listeners for quantity adjustment buttons
+            setupQuantityControls();
+
+        } catch (error) {
+            // Log error for debugging
+            // console.error('Error rendering cart:', error);
+            
+            // Show user-friendly error message
+            const listCart = document.querySelector('.listCart');
+            if (listCart) {
+                listCart.innerHTML = `
+                    <div class="cart-error" role="alert">
+                        <p>Sorry, there was a problem displaying your cart. Please try refreshing the page.</p>
+                    </div>
+                `;
+            }
+            
+            // Reset cart if data is corrupted
+            if (error.message.includes('Invalid cart data')) {
+                localStorage.removeItem('cart');
+                cart = [];
+            }
+        }
+    };
+
+    /**
+     * Creates a cart item element with product information
+     * @param {Object} info - Product information
+     * @param {Object} item - Cart item data
+     * @returns {HTMLElement} The created cart item element
+     */
+    const createCartItemElement = (info, item) => {
+        if (!info || !item) {
+            throw new Error('Invalid product or cart item data');
+        }
+
+        const productItem = document.createElement('div');
+        productItem.classList.add('item');
+        
+        // Validate required product information
+        if (!info.image || !info.name || !info.price) {
+            throw new Error('Missing required product information');
+        }
+
+        productItem.innerHTML = `
+            <img src="${info.image}" alt="${info.name}" onerror="this.src='placeholder.jpg'">
+            <div class="info">
+                <div class="name">${info.name}</div>
+                <div class="price">GHC ${info.price}</div>
+            </div>
+            <div class="quantity" role="group" aria-label="Quantity controls for ${info.name}">
+                <button class="decrease" data-id="${info.id}" aria-label="Decrease quantity" tabindex="0">-</button>
+                <span class="quantity-display" role="status" aria-live="polite">${item.quantity}</span>
+                <button class="increase" data-id="${info.id}" aria-label="Increase quantity" tabindex="0">+</button>
+            </div>
+        `;
+
+        return productItem;
+    };
+
+    /**
+     * Sets up event listeners for quantity control buttons
+     */
+    const setupQuantityControls = () => {
         document.querySelectorAll('.increase, .decrease').forEach(button => {
             button.addEventListener('click', handleQuantityChange);
             button.addEventListener('keydown', (e) => {
@@ -133,7 +209,7 @@ const cart = () => {
                 }
             });
         });
-    }
+    };
 
     function handleQuantityChange() {
         const id = this.dataset.id;
